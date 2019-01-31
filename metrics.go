@@ -63,7 +63,7 @@ func httpServ() {
 }
 
 func recordMetrics(mac string, rssi int16, data RuuviData) {
-	tempC := float64(data.Temp) + (float64(data.TempDec) / 100)
+	tempC := data.Temp
 	tempF := tempC * 9 / 5 + 32
 	tempF = math.Round(tempF * 100) / 100
 	humidityGauge.WithLabelValues(mac).Set(float64(data.Humidity))

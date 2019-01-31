@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bytes"
-	"encoding/binary"
+	//"bytes"
+	//"encoding/binary"
 	"flag"
 
 	"os"
@@ -98,12 +98,13 @@ func parseAndRecord(dev *api.Device) error {
 	}
 	rawData := props.ManufacturerData[0x0499].Value().([]byte)
 	data := RuuviData{}
-	r := bytes.NewReader(rawData)
-	_ = binary.Read(r, binary.BigEndian, &data)
+	data.FromBytes(rawData)
+	// r := bytes.NewReader(rawData)
+	// _ = binary.Read(r, binary.BigEndian, &data)
 	if *verbose {
 		log.Infof("[%s] %3ddb\n", props.Address, props.RSSI)
 		log.Infof("md=%v", rawData)
-		log.Infof("ver=%d humidity=%d tempc=%d.%2d pressure=%dPa acc=(%d %d %d) battery=%dmv", data.Ver, data.Humidity, data.Temp, data.TempDec, data.Pressure + 50000, data.AccelerationX, data.AccelerationY, data.AccelerationZ, data.Battery)
+		log.Infof("ver=%d humidity=%d tempc=%.2fC pressure=%dPa acc=(%d %d %d) battery=%dmv", data.Ver, data.Humidity, data.Temp, data.Pressure + 50000, data.AccelerationX, data.AccelerationY, data.AccelerationZ, data.Battery)
 	}
 	recordMetrics(props.Address, props.RSSI, data)
 	return nil
